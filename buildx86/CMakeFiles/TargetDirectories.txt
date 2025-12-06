@@ -1,0 +1,8 @@
+/home/strelkovkm/ProcessingLargeFiles/buildx86/CMakeFiles/edit_cache.dir
+/home/strelkovkm/ProcessingLargeFiles/buildx86/CMakeFiles/rebuild_cache.dir
+/home/strelkovkm/ProcessingLargeFiles/buildx86/FileProcessing/CMakeFiles/FileProcessing.dir
+/home/strelkovkm/ProcessingLargeFiles/buildx86/FileProcessing/CMakeFiles/edit_cache.dir
+/home/strelkovkm/ProcessingLargeFiles/buildx86/FileProcessing/CMakeFiles/rebuild_cache.dir
+/home/strelkovkm/ProcessingLargeFiles/buildx86/src/CMakeFiles/src.dir
+/home/strelkovkm/ProcessingLargeFiles/buildx86/src/CMakeFiles/edit_cache.dir
+/home/strelkovkm/ProcessingLargeFiles/buildx86/src/CMakeFiles/rebuild_cache.dir
