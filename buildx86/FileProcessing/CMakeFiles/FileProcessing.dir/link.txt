@@ -1,2 +1,0 @@
-/usr/bin/ar qc libFileProcessing.a CMakeFiles/FileProcessing.dir/FileProcessing.cpp.o
-/usr/bin/ranlib libFileProcessing.a
