@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-
+#include <fstream>
 
 
 class FileProcessing {
@@ -24,5 +24,4 @@ class FileProcessing {
     void EraseFromFile(std::string name_of_file_input_, size_t size_to_erase); //Миша
     void ShaffleInRAM(); //Егорка
     void WriteToFile(std::string name_of_file_output_);
-
 };
