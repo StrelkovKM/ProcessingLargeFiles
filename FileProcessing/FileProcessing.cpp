@@ -43,22 +43,22 @@ void EraseFromFile(const std::string& name_of_file_input_, size_t size_to_erase)
 
 
 
-void FileProcessing::SizeRAM()
-{
-    MEMORYSTATUSEX memInfo;
-    memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+// void FileProcessing::SizeRAM()
+// {
+//     MEMORYSTATUSEX memInfo;
+//     memInfo.dwLength = sizeof(MEMORYSTATUSEX);
 
-    if (GlobalMemoryStatusEx(&memInfo)) {
+//     if (GlobalMemoryStatusEx(&memInfo)) {
 
-        std::cout << "Free RAM: " << memInfo.ullAvailPhys << " B\n";
-        size_of_RAM_byte = memInfo.ullAvailPhys;
-    }
-    else {
-        std::cout << "Error of reading of RAM size\n";
-        DWORD error = GetLastError();
-        std::cout << "Error code: " << error << std::endl;
-    }
-}
+//         std::cout << "Free RAM: " << memInfo.ullAvailPhys << " B\n";
+//         size_of_RAM_byte = memInfo.ullAvailPhys;
+//     }
+//     else {
+//         std::cout << "Error of reading of RAM size\n";
+//         DWORD error = GetLastError();
+//         std::cout << "Error code: " << error << std::endl;
+//     }
+// }
 
 
 void FileProcessing::LenFile()

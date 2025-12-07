@@ -42,6 +42,5 @@
 
 
 # Directories
-/buildx86
-/build
-/build_vs
+buildx86_linux/
+.vscode/
