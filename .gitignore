@@ -43,3 +43,5 @@
 
 # Directories
 /buildx86
+/build
+/build_vs
