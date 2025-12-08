@@ -15,6 +15,7 @@ size_t random_len(size_t max_len) {
 int main () {
     FileProcessing file("/home/strelkovkm/ProcessingLargeFiles/src/InputFile.txt",
         "/home/strelkovkm/ProcessingLargeFiles/src/OutputFile.txt");
-    file.SetSizeRAM(4 * 1024);
+    file.EraseFromFile(4);
+
 }
 
