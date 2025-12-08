@@ -177,7 +177,5 @@ void FileProcessing::CopyPartFileToRAM(size_t size_of_empty_RAM)
         }
         start_pos++;
     }
-
-    
 }
 
