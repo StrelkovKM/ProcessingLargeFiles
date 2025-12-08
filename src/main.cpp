@@ -13,26 +13,8 @@ size_t random_len(size_t max_len) {
 }
 
 int main () {
-
-    //std::ofstream inputFile("InputFile.txt");
-    //if (!inputFile.is_open()) {
-    //    std::cerr << "Error opening file!" << std::endl;
-    //    return 1;
-    //}
-
-    //if (inputFile.is_open()) {
-    //    size_t len_of_row = 1000;
-    //    for (size_t i = 0; i < len_of_row; i++) {
-    //        size_t len_of_str = random_len(1020);
-    //        inputFile << i;
-    //        for (size_t j = 0; j < len_of_str; j++) {
-    //            inputFile << 0;
-    //        }
-    //        inputFile << "\n";
-    //    }
-    //}
-
-    FileProcessing file("InputFile.txt","OutputFile.txt");
+    FileProcessing file("/home/strelkovkm/ProcessingLargeFiles/src/InputFile.txt",
+        "/home/strelkovkm/ProcessingLargeFiles/src/OutputFile.txt");
     file.SetSizeRAM(4 * 1024);
 }
 
