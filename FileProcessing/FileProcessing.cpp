@@ -1,7 +1,7 @@
 #include "FileProcessing.h"
 
 FileProcessing::FileProcessing(const std::string& input_filename_, const std::string& output_filename_)
-    : RAM(), input_descriptor(-1), output_descriptor(-1), size_of_RAM(0)
+    : RAM(), input_descriptor(-1), output_descriptor(-1), size_of_RAM(0), chunk_erase(0)
     , input_filename(input_filename_), output_filename(output_filename_)
 {
     input_descriptor = open(input_filename.c_str(), O_RDWR);
@@ -111,6 +111,24 @@ void FileProcessing::EraseFromFile(size_t chunk_erase) {
     std::cout << "[INFO] New file size: " << len_input_file << " byte\n";
 }
 
+void FileProcessing::ShaffleInRAM()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    
+    size_t n = RAM.size();
+    
+    if (n < 2) return;
+    
+    for (size_t i = 0; i < n - 1; ++i)
+    {
+        std::uniform_int_distribution<size_t> dis(i, n - 1);
+        size_t j = dis(gen);
+        
+        std::swap(RAM[i], RAM[j]);
+    }
+}
+
 void FileProcessing::WriteToFile(int file_descriptor)
 {
     if (RAM.empty()) {
@@ -128,5 +146,38 @@ void FileProcessing::WriteToFile(int file_descriptor)
     
     fsync(output_descriptor);
     
-    std::cout << "Writen to new file: " << bytes_written << "byte" << std::endl;
+    //std::cout << "Written to the new file: " << bytes_written << "byte" << std::endl;
 }
+
+void FileProcessing::CopyPartFileToRAM(size_t size_of_empty_RAM)
+{
+    size_t start_pos = len_input_file - size_of_empty_RAM;
+    if(start_pos < 0) {
+        start_pos = len_input_file;
+    }
+
+    char a = '\0';
+    ssize_t n = read(input_descriptor, &a, start_pos);
+    while(a != '\n') {
+        n = read(input_descriptor, &a, ++start_pos);
+    }
+
+    chunk_erase = len_input_file - start_pos - 1;
+
+    std::string buffer;
+
+    while (start_pos != len_input_file) 
+    {
+        ssize_t n = read(input_descriptor, &a, start_pos);
+        buffer.push_back(a);
+        if(a == '\n')
+        {
+            RAM.push_back(buffer);
+            buffer.clear();
+        }
+        start_pos++;
+    }
+
+    
+}
+

@@ -44,3 +44,5 @@
 # Directories
 buildx86_linux/
 .vscode/
+
+*.txt
