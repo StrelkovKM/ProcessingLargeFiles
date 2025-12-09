@@ -90,7 +90,8 @@ void FileProcessing::LenInputFile() {
 
 void FileProcessing::ClearHalfRAM()
 {
-    RAM.clear();
+    int half = RAM.size() / 2;
+    RAM.erase(RAM.begin() + half, RAM.end());
 }
 
 void FileProcessing::EraseFromFile(size_t chunk_erase) {

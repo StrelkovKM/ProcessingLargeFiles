@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Рабочий стол\ProcessingLargeFiles\FileProcessing\FileProcessing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Рабочий стол\ProcessingLargeFiles\FileProcessing\FileProcessing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Рабочий стол\ProcessingLargeFiles\FileProcessing\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{343E6CED-4A44-35DF-9AC4-9AFBAF258627}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{79CA3F42-23A7-397A-906C-1C337C9BAA16}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
