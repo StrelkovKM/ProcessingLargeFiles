@@ -146,36 +146,44 @@ void FileProcessing::WriteToFile(int file_descriptor)
     
     fsync(output_descriptor);
     
-    //std::cout << "Written to the new file: " << bytes_written << "byte" << std::endl;
+    std::cout << "Written to the new file: " << bytes_written << "byte" << std::endl;
 }
 
 void FileProcessing::CopyPartFileToRAM(size_t size_of_empty_RAM)
 {
-    size_t start_pos = len_input_file - size_of_empty_RAM;
-    if(start_pos < 0) {
-        start_pos = len_input_file;
+    size_t start_pos = (len_input_file - size_of_empty_RAM > 0) ? (len_input_file - size_of_empty_RAM) : 0 ;
+    
+    char a;
+    lseek(input_descriptor, start_pos, SEEK_SET);
+    ssize_t n = read(input_descriptor, &a, 1);
+    while(a != '\n')
+    {
+        lseek(input_descriptor, ++start_pos, SEEK_SET);
+        n = read(input_descriptor, &a, 1);
     }
-
-    char a = '\0';
-    ssize_t n = read(input_descriptor, &a, start_pos);
-    while(a != '\n') {
-        n = read(input_descriptor, &a, ++start_pos);
-    }
-
-    chunk_erase = len_input_file - start_pos - 1;
-
-    std::string buffer;
-
+    size_t i = 0;
+    RAM.resize(1);
     while (start_pos != len_input_file) 
     {
-        ssize_t n = read(input_descriptor, &a, start_pos);
-        buffer.push_back(a);
+        ssize_t n = read(input_descriptor, &a, 1);
+        RAM[i].push_back(a);
         if(a == '\n')
         {
-            RAM.push_back(buffer);
-            buffer.clear();
+            i++;
+            RAM.resize(i + 1);
         }
         start_pos++;
     }
 }
-
+void FileProcessing::ExecuteProcessing()
+{
+    size_t size_of_empty_RAM = size_of_RAM;
+    while (len_input_file > 0)
+    {
+        CopyPartFileToRAM(size_of_empty_RAM);
+        ShaffleInRAM();
+        WriteToFile(output_descriptor);
+        RAM.clear();
+        EraseFromFile(size_of_empty_RAM);
+    }
+}

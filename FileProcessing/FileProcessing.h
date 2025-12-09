@@ -43,4 +43,5 @@ class FileProcessing {
     void EraseFromFile(size_t chunk_erase_);
     void ShaffleInRAM();
     void WriteToFile(int file_descriptor);
+    void ExecuteProcessing();
 };
