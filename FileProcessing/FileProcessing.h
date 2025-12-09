@@ -31,6 +31,7 @@ class FileProcessing {
     
     void SizeRAM();
     void LenInputFile();
+    void ClearHalfRAM(); 
 
     public:
     FileProcessing(const std::string& input_filename_, const std::string& output_filename_);
@@ -38,7 +39,6 @@ class FileProcessing {
     ~FileProcessing();
     
     void SetSizeRAM(size_t size_of_RAM_);
-
     void CopyPartFileToRAM(size_t size_of_empty_RAM); 
     void EraseFromFile(size_t chunk_erase_);
     void ShaffleInRAM();

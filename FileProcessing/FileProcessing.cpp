@@ -88,6 +88,10 @@ void FileProcessing::LenInputFile() {
     len_input_file = st.st_size;
 }
 
+void FileProcessing::ClearHalfRAM()
+{
+    RAM.clear();
+}
 
 void FileProcessing::EraseFromFile(size_t chunk_erase) {
     if (len_input_file == 0) {
@@ -149,35 +153,41 @@ void FileProcessing::WriteToFile(int file_descriptor)
     //std::cout << "Written to the new file: " << bytes_written << "byte" << std::endl;
 }
 
-void FileProcessing::CopyPartFileToRAM(size_t size_of_empty_RAM)
+void FileProcessing::CopyPartFileToRAM(size_t size_of_empty_RAM) 
 {
-    size_t start_pos = len_input_file - size_of_empty_RAM;
-    if(start_pos < 0) {
-        start_pos = len_input_file;
-    }
+    size_t start_pos = (len_input_file - size_of_empty_RAM > 0) ? (len_input_file - size_of_empty_RAM) : 0;
 
-    char a = '\0';
-    ssize_t n = read(input_descriptor, &a, start_pos);
-    while(a != '\n') {
-        n = read(input_descriptor, &a, ++start_pos);
+    char symbol = '\0';
+
+    //optimaze
+    lseek(input_descriptor, start_pos, SEEK_SET);
+    ssize_t n = read(input_descriptor, &symbol, 1);
+    while(symbol != '\n') {
+        lseek(input_descriptor, ++start_pos, SEEK_SET);
+        n = read(input_descriptor, &symbol, 1);
     }
 
     chunk_erase = len_input_file - start_pos - 1;
+    std::cout << "[INFO] Chunk to erase: " << chunk_erase << " byte\n";
 
+    //optimaze
+    ++start_pos;
     std::string buffer;
-
-    while (start_pos != len_input_file) 
-    {
-        ssize_t n = read(input_descriptor, &a, start_pos);
-        buffer.push_back(a);
-        if(a == '\n')
+    while (start_pos != len_input_file) {
+        lseek(input_descriptor, start_pos, SEEK_SET);
+        ssize_t n = read(input_descriptor, &symbol, 1);
+        buffer.push_back(symbol);
+        if(symbol == 10)
         {
             RAM.push_back(buffer);
             buffer.clear();
         }
         start_pos++;
-    }
+    } 
 
-    
+    std::cout << "[INFO] Copied to RAM: " << RAM.size() << " lines\n";
+    for (const auto& line : RAM) {
+        std::cout << line << "\n";
+    }
 }
 

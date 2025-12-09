@@ -45,6 +45,12 @@ void write_large_file(const std::string& filename)
 }
 
 int main () {
-    write_large_file("/home/strelkovkm/ProcessingLargeFiles/32GB.txt");
-    std::cout << "end";
+    FileProcessing file_processor("/home/strelkovkm/ProcessingLargeFiles/src/InputFile.txt", "/home/strelkovkm/ProcessingLargeFiles/src/OutputFile.txt");
+    file_processor.SetSizeRAM(15);
+    file_processor.CopyPartFileToRAM(15);
+    file_processor.EraseFromFile(8);
+    file_processor.ShaffleInRAM();
+    file_processor.CopyPartFileToRAM(15);
+    file_processor.EraseFromFile(13);
+    file_processor.ShaffleInRAM();
 }
