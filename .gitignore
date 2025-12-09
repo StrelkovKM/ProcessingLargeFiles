@@ -42,6 +42,8 @@
 
 
 # Directories
-/buildx86
+buildx86_linux/
 /build
 /build_vs
+
+*.txt
