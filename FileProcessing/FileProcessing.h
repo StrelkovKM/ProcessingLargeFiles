@@ -27,8 +27,10 @@ class FileProcessing {
     std::string output_filename;
     int output_descriptor;
     
+    size_t memory_at_RAM;
     size_t chunk_erase;
-    
+
+
     void SizeRAM();
     void LenInputFile();
     void ClearHalfRAM(); 
@@ -42,5 +44,6 @@ class FileProcessing {
     void CopyPartFileToRAM(size_t size_of_empty_RAM); 
     void EraseFromFile(size_t chunk_erase_);
     void ShaffleInRAM();
-    void WriteToFile(int file_descriptor);
+    void WriteToFile(size_t chunk_write_);
+    void ExecuteProcessing();
 };

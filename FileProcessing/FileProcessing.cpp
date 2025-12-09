@@ -1,7 +1,7 @@
 #include "FileProcessing.h"
 
 FileProcessing::FileProcessing(const std::string& input_filename_, const std::string& output_filename_)
-    : RAM(), input_descriptor(-1), output_descriptor(-1), size_of_RAM(0), chunk_erase(0)
+    : RAM(), input_descriptor(-1), output_descriptor(-1), size_of_RAM(0), chunk_erase(0), memory_at_RAM(0)
     , input_filename(input_filename_), output_filename(output_filename_)
 {
     input_descriptor = open(input_filename.c_str(), O_RDWR);
@@ -92,6 +92,7 @@ void FileProcessing::ClearHalfRAM()
 {
     int half = RAM.size() / 2;
     RAM.erase(RAM.begin() + half, RAM.end());
+    RAM.shrink_to_fit(); //obsudit
 }
 
 void FileProcessing::EraseFromFile(size_t chunk_erase) {
@@ -132,10 +133,16 @@ void FileProcessing::ShaffleInRAM()
         
         std::swap(RAM[i], RAM[j]);
     }
+
+    std::cout << "[INFO] RAM: " << RAM.size() << " lines\n";
+    for (const auto& line : RAM) {
+        std::cout << line << "\n";
+    }
 }
 
-void FileProcessing::WriteToFile(int file_descriptor)
+void FileProcessing::WriteToFile(size_t chunk_write_)
 {
+    int shift = RAM.size() - chunk_write_;
     if (RAM.empty()) {
         return;
     }
@@ -144,14 +151,20 @@ void FileProcessing::WriteToFile(int file_descriptor)
         throw std::runtime_error("Positioning error in the output file");
     }
     
-    ssize_t bytes_written = write(output_descriptor, RAM.data(), RAM.size());
-    if (bytes_written == -1) {
-        throw std::runtime_error("Recording error: " + std::string(strerror(errno)));
+    for (auto it = RAM.begin() + shift; it != RAM.end() ; ++it) {
+        ssize_t bytes_written = write(output_descriptor, (*it).c_str(), (*it).size());
+        if (bytes_written == -1) {
+            throw std::runtime_error("Write error to output file: " + std::string(strerror(errno)));
+        }
     }
     
     fsync(output_descriptor);
     
-    //std::cout << "Written to the new file: " << bytes_written << "byte" << std::endl;
+    ClearHalfRAM();
+    std::cout << "[INFO] RAM: " << RAM.size() << " lines\n";
+    for (const auto& line : RAM) {
+        std::cout << line << "\n";
+    }
 }
 
 void FileProcessing::CopyPartFileToRAM(size_t size_of_empty_RAM) 
@@ -192,3 +205,27 @@ void FileProcessing::CopyPartFileToRAM(size_t size_of_empty_RAM)
     }
 }
 
+void FileProcessing::ExecuteProcessing()
+{
+    // size_t size_of_empty_RAM = size_of_RAM;
+    // CopyPartFileToRAM(size_of_empty_RAM); //RAM: 0 -> chunk_erase
+    // ShaffleInRAM(); //RAM: chunk_erase
+    // WriteToFile(); //RAM: chunk_erase ->  chunk / 2
+    // EraseFromFile(size_of_empty_RAM);
+    // size_t chunk = chunk_erase / 2 + chunk_erase % 2;
+    // while (len_input_file > chunk)
+    // {
+    //     chunk = chunk_erase / 2 + chunk_erase % 2;
+    //     CopyPartFileToRAM(chunk);//new_chunk
+    //     ShaffleInRAM();
+    //     WriteToFile();// new_chunk / 2
+    //     EraseFromFile(chunk);// new_chunk / 2
+    // }
+    // CopyPartFileToRAM(len_input_file);// chunk
+    // ShaffleInRAM();
+    // WriteToFile();// 0
+    // EraseFromFile(len_input_file);// chunk
+    // RAM.clear();
+
+    
+}

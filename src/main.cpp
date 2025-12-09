@@ -48,9 +48,7 @@ int main () {
     FileProcessing file_processor("/home/strelkovkm/ProcessingLargeFiles/src/InputFile.txt", "/home/strelkovkm/ProcessingLargeFiles/src/OutputFile.txt");
     file_processor.SetSizeRAM(15);
     file_processor.CopyPartFileToRAM(15);
-    file_processor.EraseFromFile(8);
+    file_processor.EraseFromFile(12);
     file_processor.ShaffleInRAM();
-    file_processor.CopyPartFileToRAM(15);
-    file_processor.EraseFromFile(13);
-    file_processor.ShaffleInRAM();
+    //file_processor.WriteToFile();
 }
