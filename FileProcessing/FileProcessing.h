@@ -41,9 +41,9 @@ class FileProcessing {
     ~FileProcessing();
     
     void SetSizeRAM(size_t size_of_RAM_);
-    void CopyPartFileToRAM(size_t size_of_empty_RAM); 
-    void EraseFromFile(size_t chunk_erase_);
+    void CopyPartFileToRAM(); 
+    void EraseFromFile();
     void ShaffleInRAM();
-    void WriteToFile(size_t chunk_write_);
+    void WriteToFile();
     void ExecuteProcessing();
 };
