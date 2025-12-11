@@ -14,6 +14,20 @@ FileProcessing::~FileProcessing()
     file.close();
 }
 
+void FileProcessing::spliteMemory()
+{
+    auto start = slice.begin();
+    auto it = slice.begin();
+    while ((it = std::find(it, slice.end(), '\n')) != slice.end())
+    {
+        memory.push_back(std::vector<char>(start, it + 1));
+        ++it;
+        start = it;
+    }
+    if (start != slice.end())
+        buffer.assign(start, slice.end());
+}
+
 void FileProcessing::clearSlice()
 {
     if (!memory[0].empty()) {

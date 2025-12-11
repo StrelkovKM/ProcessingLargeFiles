@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 class FileProcessing {
     private:
