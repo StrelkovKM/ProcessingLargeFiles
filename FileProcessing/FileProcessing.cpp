@@ -73,6 +73,20 @@ void FileProcessing::lenFile()
     file.seekg(0, std::ios::beg);
 }
 
+void FileProcessing::spliteMemory()
+{
+    auto start = slice.begin();
+    auto it = slice.begin();
+    while ((it = std::find(it, slice.end(), '\n')) != slice.end())
+    {
+        memory.push_back(std::vector<char>(start, it + 1));
+        ++it;
+        start = it;
+    }
+    if (start != slice.end())
+        buffer.assign(start, slice.end());
+}
+
 void FileProcessing::clearSlice()
 {
     if (!slice.empty()) {

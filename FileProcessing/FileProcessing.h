@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
 
 #ifdef _WIN32
     #include <windows.h>
