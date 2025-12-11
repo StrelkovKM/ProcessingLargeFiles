@@ -162,10 +162,11 @@ void FileProcessing::ShaffleInRAM()
 void FileProcessing::WriteToFile()
 {
     std::cout << "========================START_WRITE=========================\n";
-    size_t shift =  0; //(len_input_file > chunk_erase) ? (RAM.size() / 2 + RAM.size() % 2) : 0;
+    size_t shift =  0;
     if ((len_input_file > chunk_erase) && RAM.size() != 1) {
-        shift = RAM.size() / 2 + RAM.size() % 2;
+        shift = RAM.size() / 2;
     }
+    std::cout << "[INFO] Shift: " << shift << '\n';
     if (lseek(output_descriptor, 0, SEEK_END) == -1) {
         throw std::runtime_error("Positioning error in the output file");
     }
@@ -189,42 +190,46 @@ void FileProcessing::CopyPartFileToRAM()
     std::cout << "len_of_file: " << len_input_file << '\n'; 
     char symbol = '\0';
 
-    //optimaze //добавить прикол с предыдущим
+    std::string buffer;
     lseek(input_descriptor, start_pos, SEEK_SET);
     ssize_t n = read(input_descriptor, &symbol, 1);
-    while(symbol != '\n' && n != -1) {
+    while(symbol != '\n' && n != 0) {
+        buffer.push_back(symbol);
         lseek(input_descriptor, ++start_pos, SEEK_SET);
         n = read(input_descriptor, &symbol, 1);
     }
 
-    chunk_erase = len_input_file - start_pos - 1;
-    std::cout << "[INFO] Chunk to erase: " << chunk_erase << " byte\n";
-
-    //optimaze
-    ++start_pos;
-    std::cout << "start_pos: " << start_pos << '\n';
-    std::string buffer;
-    while (start_pos != len_input_file && n != -1) {
-        lseek(input_descriptor, start_pos, SEEK_SET);
-        ssize_t n = read(input_descriptor, &symbol, 1);
+    if (start_pos == len_input_file - 1) {
         buffer.push_back(symbol);
-        if(symbol == 10)
-        {
+        RAM.push_back(buffer);
+        std::cout << buffer;
+        chunk_erase = len_input_file;
+    } else {
+        buffer.clear();
+        chunk_erase = len_input_file - start_pos - 1;
+        //optimaze
+        ++start_pos;
+        std::cout << "start_pos: " << start_pos << '\n';
+        while (start_pos != len_input_file && n != -1) {
+            lseek(input_descriptor, start_pos, SEEK_SET);
+            ssize_t n = read(input_descriptor, &symbol, 1);
+            buffer.push_back(symbol);
+            if(symbol == '\n' || n == -1)
+            {
             RAM.push_back(buffer);
             buffer.clear();
+            }
+            start_pos++;
         }
-        start_pos++;
-    } 
-
-    std::cout << "[INFO] Copied to RAM: " << RAM.size() << " lines\n";
-    for (const auto& line : RAM) {
-        std::cout << line << "\n";
+        std::cout << "[INFO] Copied to RAM: " << RAM.size() << " lines\n";
+        for (const auto& line : RAM) {
+            std::cout << line << "\n";
+        }
     }
+    std::cout << "[INFO] Chunk to erase: " << chunk_erase << " byte\n";
     memory_at_RAM += chunk_erase;
-
     std::cout << "========================END_COPY=========================\n";
 }
-
 
 void FileProcessing::ExecuteProcessing()
 {
@@ -234,37 +239,14 @@ void FileProcessing::ExecuteProcessing()
         return;
     }
 
-    CopyPartFileToRAM();
-    ShaffleInRAM();
-    EraseFromFile();
-    WriteToFile();
-    ClearHalfRAM();
-
-    while (len_input_file > 0 && len_input_file > (size_of_RAM - memory_at_RAM)) {
+    while (len_input_file > 0 && len_input_file > 0) {
         CopyPartFileToRAM();
-        if (RAM.empty()) break;
-        
         ShaffleInRAM();
         WriteToFile();
         EraseFromFile();
-
         ClearHalfRAM();
     }
 
-    // Последний кусок
-    if (len_input_file > 0) {
-        CopyPartFileToRAM();
-        if (!RAM.empty()) {
-            ShaffleInRAM();
-            WriteToFile();
-            EraseFromFile();
-        }
-    }
-
-    // Очищаем RAM
     RAM.clear();
-    memory_at_RAM = 0;
-    chunk_erase = 0;
-    
     std::cout << "[INFO] Processing completed\n";
 }

@@ -2,6 +2,7 @@
 #include <random>
 #include <fstream>
 #include <chrono>
+#include <string>
 
 #include "FileProcessing.h"
 
@@ -45,7 +46,12 @@ void write_large_file(const std::string& filename)
 }
 
 int main () {
+    auto start = std::chrono::high_resolution_clock::now();
     FileProcessing file_processor("/home/strelkovkm/ProcessingLargeFiles/src/InputFile.txt", "/home/strelkovkm/ProcessingLargeFiles/src/OutputFile.txt");
-    file_processor.SetSizeRAM(15);
+    file_processor.SetSizeRAM(25);
     file_processor.ExecuteProcessing();
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    
+    std::cout << "Time: " << duration.count() << " ms\n";
 }
