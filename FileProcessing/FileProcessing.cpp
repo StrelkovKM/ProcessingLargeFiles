@@ -16,7 +16,7 @@ FileProcessing::~FileProcessing()
 
 void FileProcessing::clearSlice()
 {
-    if (!memory[0].empty()) {
-        memory.clear();
+    if (!slice.empty()) {
+        slice.clear();
     }
 }
