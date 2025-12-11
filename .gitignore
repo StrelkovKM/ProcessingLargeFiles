@@ -43,7 +43,7 @@
 
 # Directories
 buildx86_linux/
-/build
-/build_vs
+build/
+.vscode/
 
 *.txt
