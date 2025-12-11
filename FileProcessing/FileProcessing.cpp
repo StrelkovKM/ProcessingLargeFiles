@@ -12,7 +12,9 @@ FileProcessing::FileProcessing(const std::string &filename) :
 
 FileProcessing::~FileProcessing()
 {
-    file.close();
+    if (file.is_open()) {
+        file.close();
+    }
 }
 
 void FileProcessing::sizeRAM()
@@ -64,10 +66,10 @@ void FileProcessing::setRAMSize(size_t size)
     ram_size = size;
 }
 
-
 void FileProcessing::clearSlice()
 {
     if (!slice.empty()) {
+        memory_size -= slice.size();
         slice.clear();
     }
 }
@@ -75,6 +77,7 @@ void FileProcessing::clearSlice()
 void FileProcessing::mergeSlice()
 {
     for (auto it = memory.begin() + memory.size() / 2; it != memory.end(); ++it) {
+        memory_size += it->size();
         slice.insert(slice.end(), it->begin(), it->end());
     }
 }
