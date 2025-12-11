@@ -59,7 +59,7 @@ void FileProcessing::sizeRAM()
     #endif
 }   
 
-void     FileProcessing::setRAMSize(size_t size)
+void FileProcessing::setRAMSize(size_t size)
 {
     ram_size = size;
 }
