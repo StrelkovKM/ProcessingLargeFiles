@@ -1,7 +1,16 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
+
 #include <vector>
 #include <string>
+
+#ifdef _WIN32
+    #include <windows.h>
+#elif __linux__
+    #include <sys/sysinfo.h>
+    #include <unordered_map>
+#endif
 
 class FileProcessing {
     private:
