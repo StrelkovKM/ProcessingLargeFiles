@@ -66,6 +66,13 @@ void FileProcessing::setRAMSize(size_t size)
     ram_size = size;
 }
 
+void FileProcessing::lenFile()
+{
+    file.seekg(0, std::ios::end);
+    size_of_file = file.tellg();
+    file.seekg(0, std::ios::beg);
+}
+
 void FileProcessing::clearSlice()
 {
     if (!slice.empty()) {
@@ -80,4 +87,9 @@ void FileProcessing::mergeSlice()
         memory_size += it->size();
         slice.insert(slice.end(), it->begin(), it->end());
     }
+}
+
+void FileProcessing::executeProcessing()
+{
+
 }

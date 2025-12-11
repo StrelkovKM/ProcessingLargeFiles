@@ -12,7 +12,7 @@
     #include <unordered_map>
 #endif
 
-class FileProcessing {
+class FileProcessing { //Kirill
     private:
     std::fstream file;
     std::vector<char> buffer;
@@ -24,19 +24,22 @@ class FileProcessing {
     size_t start_read;
     size_t chunk_read;
 
-    public:
-    FileProcessing(const std::string& filename);
-    ~FileProcessing();
+    size_t size_of_file;
 
-    void sizeRAM();
-    void setRAMSize(size_t size);
+    public:
+    FileProcessing(const std::string& filename); //Kirill
+    ~FileProcessing(); //Kirill
+
+    void sizeRAM(); //Kirill
+    void setRAMSize(size_t size); //Kirill
+    void lenFile(); //Kirill
 
     void readFile(); //Egor
     void spliteMemory(); //Misha
-    void clearSlice();
+    void clearSlice(); //Kirill
     void shuffleMemory(); //Egor
-    void mergeSlice();
+    void mergeSlice(); //Kirill
     void writeFile(); //Misha
 
-    void executeProcessing();
+    void executeProcessing(); //Kirill
 };
