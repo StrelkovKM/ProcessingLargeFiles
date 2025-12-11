@@ -8,3 +8,15 @@ FileProcessing::FileProcessing(const std::string &filename) :
         std::cerr << "Error opening file: " << filename << std::endl;
     }
 }
+
+FileProcessing::~FileProcessing()
+{
+    file.close();
+}
+
+void FileProcessing::clearSlice()
+{
+    if (!memory[0].empty()) {
+        memory.clear();
+    }
+}

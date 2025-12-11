@@ -7,6 +7,7 @@ class FileProcessing {
     private:
     std::fstream file;
     std::vector<char> buffer;
+    std::vector<char> slice;
     std::vector<std::vector<char>> memory;
     size_t memory_size;
     size_t ram_size;
