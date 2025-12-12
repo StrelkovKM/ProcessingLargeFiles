@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <random>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -16,16 +17,16 @@
 class FileProcessing {
     private:
     std::fstream file;
-    std::vector<char> buffer;
-    std::vector<char> slice;
-    std::vector<std::vector<char>> memory;
-    size_t memory_size;
-    size_t ram_size;
-    size_t start_write;
-    size_t start_read;
+    std::vector<char> buffer;//Хранит начало последней строки, которая может быть считатана не до конца
+    std::vector<char> slice;//Хранит сырые данные после считывания без разбиения на строки
+    std::vector<std::vector<char>> memory;//Хранит только целые строки из считанных сырых данных
+    size_t memory_size;//Количество данных из файла, которые хранятся в memory
+    size_t ram_size;//Количество оперативной памяти, которая нам доступна
+    size_t start_write;//Позиция, на которую записываем перемешанные строки в файл
+    size_t start_read;//Позиция, с которой считываем сырые данные из файла
     size_t chunk_read;
 
-    size_t size_of_file;
+    size_t size_of_file;//Обьем данных в файле/Количество символов в файле
 
     public:
     FileProcessing(const std::string& filename);

@@ -8,6 +8,8 @@ FileProcessing::FileProcessing(const std::string &filename) :
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << filename << std::endl;
     }
+    lenFile();
+    sizeRAM();
 }
 
 FileProcessing::~FileProcessing()
@@ -25,7 +27,7 @@ void FileProcessing::sizeRAM()
         if (GlobalMemoryStatusEx(&memInfo)) {
 
             std::cout << "Free RAM: " << memInfo.ullAvailPhys << " B\n";
-            size_of_RAM_byte = static_cast<size_t>(memInfo.ullAvailPhys*0.7);
+            ram_size = static_cast<size_t>(memInfo.ullAvailPhys*0.7);
         }
         else {
             std::cout << "Error of reading of RAM size\n";
@@ -64,6 +66,7 @@ void FileProcessing::sizeRAM()
 void FileProcessing::setRAMSize(size_t size)
 {
     ram_size = size;
+    slice.clear();
 }
 
 void FileProcessing::lenFile()
@@ -71,6 +74,20 @@ void FileProcessing::lenFile()
     file.seekg(0, std::ios::end);
     size_of_file = file.tellg();
     file.seekg(0, std::ios::beg);
+}
+
+void FileProcessing::readFile()
+{
+    size_t current_read = (start_read + (ram_size - memory_size) > size_of_file)
+        ? (size_of_file - start_read)
+        : (ram_size - memory_size);
+    slice.resize(current_read);
+    file.seekg(start_read);
+    file.read(slice.data(), current_read);
+    start_read += current_read;
+    std::cout << "\n------------------------------" << slice.size()<<'\n';
+    for (size_t i = 0; i < slice.size(); ++i)
+        std::cout << slice[i];
 }
 
 void FileProcessing::spliteMemory()
@@ -93,6 +110,28 @@ void FileProcessing::clearSlice()
         memory_size -= slice.size();
         slice.clear();
     }
+}
+
+void FileProcessing::shuffleMemory()
+{
+    std::cout << "========================START_SHAFFLE=========================\n";
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    size_t n = memory.size();
+
+    if (n < 2) return;
+
+    for (size_t i = 0; i < n - 1; ++i)
+    {
+        std::uniform_int_distribution<size_t> dis(i, n - 1);
+        size_t j = dis(gen);
+
+        std::swap(memory[i], memory[j]);
+    }
+
+    std::cout << "[INFO] RAM: " << memory.size() << " lines\n";
+    std::cout << "========================END_SHAFFLE=========================\n";
 }
 
 void FileProcessing::mergeSlice()
