@@ -104,11 +104,13 @@ void FileProcessing::readFile()
     std::cout << "========================START_READ=========================\n";
     size_t chunk_read = ( (start_read + (ram_size - memory_size - buffer.size()) / 2) > size_of_file)
         ? (size_of_file - start_read) : ( (ram_size - memory_size - buffer.size() ) / 2);
+    std::cout << "[INFO] START_READ: " << start_read << "\n";
+    std::cout << "[INFO] CHUNK_READ: " << chunk_read << "\n";
     slice.resize(chunk_read);
     file.seekg(start_read);
     file.read(slice.data(), chunk_read);
     start_read += chunk_read;
-    printRAM();
+    //printRAM();
     std::cout << "========================STOP_READ=========================\n";
 }
 
@@ -119,7 +121,7 @@ void FileProcessing::spliteMemory()
     auto it = slice.begin();
     if (!memory.empty() && memory.back().back() != '\n') {
         it = std::find(it, slice.end(), '\n');
-        memory[memory.size() - 1].insert(memory.back().end(), slice.begin(), it + 1);
+        memory.back().insert(memory.back().end(), slice.begin(), it + 1);
         ++it;
     }
     auto start = it;
@@ -133,7 +135,7 @@ void FileProcessing::spliteMemory()
         buffer.assign(start, slice.end());
 
     memory_size += slice.size() - buffer.size();
-    printRAM();
+    //printRAM();
     std::cout << "========================STOP_SPLITE=========================\n";
 }
 
@@ -143,7 +145,7 @@ void FileProcessing::clearSlice()
     if (!slice.empty()) {
         slice.clear();
     }
-    printRAM();
+    //printRAM();
     std::cout << "=====================STOP_CLEAR_SLICE=======================\n";
 }
 
@@ -153,13 +155,13 @@ void FileProcessing::clearBuffer()
     if (!buffer.empty()) {
         buffer.clear();
     }
-    printRAM();
+    //printRAM();
     std::cout << "====================STOP_CLEAR_SLICE======================\n";
 }
 
 void FileProcessing::shuffleMemory()
 {
-    std::cout << "========================START_SHAFFLE=========================\n";
+    std::cout << "========================START_SHUFFLE=========================\n";
     std::random_device rd;
     std::mt19937 gen(rd());
 
@@ -175,15 +177,15 @@ void FileProcessing::shuffleMemory()
         std::swap(memory[i], memory[j]);
     }
 
-    printRAM();
-    std::cout << "========================END_SHAFFLE=========================\n";
+    //printRAM();
+    std::cout << "========================END_SHUFFLE=========================\n";
 }
 
 void FileProcessing::mergeSlice()
 {
     std::cout << "========================START_MERGE=========================\n";
 
-    size_t start_index = memory.size() / 2;
+    size_t start_index = (start_read != size_of_file) ? memory.size() / 2 : 0;
     auto start_it = memory.begin() + start_index;
 
     for (auto it = start_it; it != memory.end(); ++it) {
@@ -193,12 +195,13 @@ void FileProcessing::mergeSlice()
     
     memory.erase(start_it, memory.end());
 
-    //memory.shrink_to_fit(); 
 
-    memory.push_back(buffer);
-    memory_size += buffer.size();
+    if(!buffer.empty()) {
+        memory.push_back(buffer);
+        memory_size += buffer.size();
+    }
     
-    printRAM();
+    //printRAM();
     std::cout << "========================STOP_MERGE=========================\n";
 }
 
@@ -207,28 +210,26 @@ void FileProcessing::writeFile()
     std::cout << "========================START_WRITE=========================\n";
     file.seekp(start_write, std::ios::beg);
     file.write(slice.data(), slice.size());
+    std::cout << "[INFO] WRITE_POS: " << start_write << "\n";
     start_write = file.tellp();
-    printRAM();
+    //printRAM();
     std::cout << "========================STOP_WRITE=========================\n";
 }
 
 void FileProcessing::executeProcessing()
 {
+    size_t n = 0;
     while (size_of_file != start_read) {
         readFile();
         spliteMemory();
         clearSlice();
         shuffleMemory();
         mergeSlice();
+        clearBuffer();
         writeFile();
         clearSlice();
+        n++;
     }
-
-    if (start_read != size_of_file) {
-        mergeSlice();
-        writeFile();
-        clearSlice();
-    }
-
+    std::cout << "\n[INFO] TOTAL_ITERATIONS: " << n << "\n";
     memory.clear();
 }

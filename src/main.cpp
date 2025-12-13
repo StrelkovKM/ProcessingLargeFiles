@@ -2,42 +2,17 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <chrono>
 #include "FileProcessing.h"
 
 int main() 
 {
-    FileProcessing A("/home/strelkovkm/ProcessingLargeFiles/src/InputFile.txt");
-    A.setRAMSize(20);
-
-    std::cout << "========================FIRST_PASS=========================\n";
-    A.readFile();
-    A.spliteMemory();
-    A.clearSlice();
-    A.shuffleMemory();
-    A.mergeSlice();
-    A.clearBuffer();
-    A.writeFile();
-    A.clearSlice();
-
-    std::cout << "========================SECOND_PASS=========================\n";
-
-    A.readFile();
-    A.spliteMemory();
-    A.clearSlice();
-    A.shuffleMemory();
-    A.mergeSlice();
-    A.clearBuffer();
-    A.writeFile();
-    A.clearSlice();
-
-    std::cout << "========================THIRD_PROCESSING=========================\n";
-
-    A.readFile();
-    A.spliteMemory();
-    A.clearSlice();
-    A.shuffleMemory();
-    A.mergeSlice();
-    A.clearBuffer();
-    A.writeFile();
-    A.clearSlice();
+    auto start = std::chrono::high_resolution_clock::now();
+    FileProcessing A("/home/strelkovkm/ProcessingLargeFiles/src/TEST_32GB.txt");
+    A.setRAMSize(0.25 * 1024 * 1024 * 1024);// 0.25 GB
+    A.executeProcessing(); 
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    
+    std::cout << "Time: " << duration.count() / 1000 << " s\n";
 }

@@ -24,15 +24,15 @@
 class FileProcessing {
     private:
     std::fstream file;
-    std::vector<char> buffer;//������ ������ ��������� ������, ������� ����� ���� ��������� �� �� �����
-    std::vector<char> slice;//������ ����� ������ ����� ���������� ��� ��������� �� ������
-    std::vector<std::vector<char>> memory;//������ ������ ����� ������ �� ��������� ����� ������
-    size_t memory_size;//���������� ������ �� �����, ������� �������� � memory
-    size_t ram_size;//���������� ����������� ������, ������� ��� ��������
-    size_t start_write;//�������, �� ������� ���������� ������������ ������ � ����
-    size_t start_read;//�������, � ������� ��������� ����� ������ �� �����
+    std::vector<char> buffer;
+    std::vector<char> slice;
+    std::vector<std::vector<char>> memory;
+    size_t memory_size;
+    size_t ram_size;
+    size_t start_write;
+    size_t start_read;
 
-    size_t size_of_file;//����� ������ � �����/���������� �������� � �����
+    size_t size_of_file;
 
     public:
     FileProcessing(const std::string& filename);
