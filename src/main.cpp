@@ -15,4 +15,5 @@ int main()
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     
     std::cout << "Time: " << duration.count() / 1000 << " s\n";
+    return 0;
 }
