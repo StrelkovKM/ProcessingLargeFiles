@@ -6,8 +6,38 @@
 
 int main() 
 {
-    FileProcessing a("InputFile.txt");
-    a.setRAMSize(5);
-    a.readFile();
-    a.readFile();
+    FileProcessing A("/home/strelkovkm/ProcessingLargeFiles/src/InputFile.txt");
+    A.setRAMSize(20);
+
+    std::cout << "========================FIRST_PASS=========================\n";
+    A.readFile();
+    A.spliteMemory();
+    A.clearSlice();
+    A.shuffleMemory();
+    A.mergeSlice();
+    A.clearBuffer();
+    A.writeFile();
+    A.clearSlice();
+
+    std::cout << "========================SECOND_PASS=========================\n";
+
+    A.readFile();
+    A.spliteMemory();
+    A.clearSlice();
+    A.shuffleMemory();
+    A.mergeSlice();
+    A.clearBuffer();
+    A.writeFile();
+    A.clearSlice();
+
+    std::cout << "========================THIRD_PROCESSING=========================\n";
+
+    A.readFile();
+    A.spliteMemory();
+    A.clearSlice();
+    A.shuffleMemory();
+    A.mergeSlice();
+    A.clearBuffer();
+    A.writeFile();
+    A.clearSlice();
 }

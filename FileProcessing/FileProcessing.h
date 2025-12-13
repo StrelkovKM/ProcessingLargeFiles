@@ -31,7 +31,6 @@ class FileProcessing {
     size_t ram_size;//���������� ����������� ������, ������� ��� ��������
     size_t start_write;//�������, �� ������� ���������� ������������ ������ � ����
     size_t start_read;//�������, � ������� ��������� ����� ������ �� �����
-    size_t chunk_read;
 
     size_t size_of_file;//����� ������ � �����/���������� �������� � �����
 
@@ -42,10 +41,11 @@ class FileProcessing {
     void sizeRAM();
     void setRAMSize(size_t size);
     void lenFile();
-
+    void printRAM();
     void readFile(); //Egor
     void spliteMemory(); //Misha
     void clearSlice();
+    void clearBuffer();
     void shuffleMemory(); //Egor
     void mergeSlice();
     void writeFile(); //Misha

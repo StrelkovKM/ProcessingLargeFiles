@@ -2,7 +2,7 @@
 
 
 FileProcessing::FileProcessing(const std::string &filename) : 
-    memory_size(0), ram_size(0), start_write(0), start_read(0), chunk_read(0)
+    memory_size(0), ram_size(0), start_write(0), start_read(0)
 {
     file.open(filename, std::ios::in | std::ios::out | std::ios::binary);
     if (!file.is_open()) {
@@ -76,24 +76,53 @@ void FileProcessing::lenFile()
     file.seekg(0, std::ios::beg);
 }
 
+void FileProcessing::printRAM()
+{
+    std::cout << "[INFO] SLICE: " << slice.size() << "\n";
+    for (const auto& it : slice) {
+        std::cout << it;
+    }
+    std::cout << "\n";
+
+    std::cout << "[INFO] MEMORY: " << memory_size << " [" << memory.size() << "]" << "\n";
+    for (const auto& it1 : memory) {
+        for (const auto& it2 : it1) {
+            std::cout << it2;
+        }
+    }
+    std::cout << "\n";
+
+    std::cout << "[INFO] BUFFER: " << buffer.size() << "\n";
+    for (const auto& it : buffer) {
+        std::cout << it;
+    }
+    std::cout << "\n";
+}
+
 void FileProcessing::readFile()
 {
-    size_t current_read = (start_read + (ram_size - memory_size) > size_of_file)
-        ? (size_of_file - start_read)
-        : (ram_size - memory_size);
-    slice.resize(current_read);
+    std::cout << "========================START_READ=========================\n";
+    size_t chunk_read = ( (start_read + (ram_size - memory_size - buffer.size()) / 2) > size_of_file)
+        ? (size_of_file - start_read) : ( (ram_size - memory_size - buffer.size() ) / 2);
+    slice.resize(chunk_read);
     file.seekg(start_read);
-    file.read(slice.data(), current_read);
-    start_read += current_read;
-    std::cout << "\n------------------------------" << slice.size()<<'\n';
-    for (size_t i = 0; i < slice.size(); ++i)
-        std::cout << slice[i];
+    file.read(slice.data(), chunk_read);
+    start_read += chunk_read;
+    printRAM();
+    std::cout << "========================STOP_READ=========================\n";
 }
 
 void FileProcessing::spliteMemory()
 {
-    auto start = slice.begin();
+    std::cout << "========================START_SPLITE=========================\n";
+
     auto it = slice.begin();
+    if (!memory.empty() && memory.back().back() != '\n') {
+        it = std::find(it, slice.end(), '\n');
+        memory[memory.size() - 1].insert(memory.back().end(), slice.begin(), it + 1);
+        ++it;
+    }
+    auto start = it;
     while ((it = std::find(it, slice.end(), '\n')) != slice.end())
     {
         memory.push_back(std::vector<char>(start, it + 1));
@@ -102,14 +131,30 @@ void FileProcessing::spliteMemory()
     }
     if (start != slice.end())
         buffer.assign(start, slice.end());
+
+    memory_size += slice.size() - buffer.size();
+    printRAM();
+    std::cout << "========================STOP_SPLITE=========================\n";
 }
 
 void FileProcessing::clearSlice()
 {
+    std::cout << "=====================START_CLEAR_SLICE======================\n";
     if (!slice.empty()) {
-        memory_size -= slice.size();
         slice.clear();
     }
+    printRAM();
+    std::cout << "=====================STOP_CLEAR_SLICE=======================\n";
+}
+
+void FileProcessing::clearBuffer()
+{
+    std::cout << "====================START_CLEAR_BUFFER=====================\n";
+    if (!buffer.empty()) {
+        buffer.clear();
+    }
+    printRAM();
+    std::cout << "====================STOP_CLEAR_SLICE======================\n";
 }
 
 void FileProcessing::shuffleMemory()
@@ -130,19 +175,60 @@ void FileProcessing::shuffleMemory()
         std::swap(memory[i], memory[j]);
     }
 
-    std::cout << "[INFO] RAM: " << memory.size() << " lines\n";
+    printRAM();
     std::cout << "========================END_SHAFFLE=========================\n";
 }
 
 void FileProcessing::mergeSlice()
 {
-    for (auto it = memory.begin() + memory.size() / 2; it != memory.end(); ++it) {
-        memory_size += it->size();
-        slice.insert(slice.end(), it->begin(), it->end());
+    std::cout << "========================START_MERGE=========================\n";
+
+    size_t start_index = memory.size() / 2;
+    auto start_it = memory.begin() + start_index;
+
+    for (auto it = start_it; it != memory.end(); ++it) {
+        slice.insert(slice.end(), std::make_move_iterator(it->begin()), std::make_move_iterator(it->end()));
+        memory_size -= it->size(); 
     }
+    
+    memory.erase(start_it, memory.end());
+
+    //memory.shrink_to_fit(); 
+
+    memory.push_back(buffer);
+    memory_size += buffer.size();
+    
+    printRAM();
+    std::cout << "========================STOP_MERGE=========================\n";
+}
+
+void FileProcessing::writeFile()
+{
+    std::cout << "========================START_WRITE=========================\n";
+    file.seekp(start_write, std::ios::beg);
+    file.write(slice.data(), slice.size());
+    start_write = file.tellp();
+    printRAM();
+    std::cout << "========================STOP_WRITE=========================\n";
 }
 
 void FileProcessing::executeProcessing()
 {
+    while (size_of_file != start_read) {
+        readFile();
+        spliteMemory();
+        clearSlice();
+        shuffleMemory();
+        mergeSlice();
+        writeFile();
+        clearSlice();
+    }
 
+    if (start_read != size_of_file) {
+        mergeSlice();
+        writeFile();
+        clearSlice();
+    }
+
+    memory.clear();
 }
