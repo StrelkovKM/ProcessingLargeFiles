@@ -5,7 +5,8 @@ FileProcessing::FileProcessing(const std::string &filename) :
     memory_size(0), ram_size(0), start_write(0), start_read(0)
 {
     file.open(filename, std::ios::in | std::ios::out | std::ios::binary);
-    if (!file.is_open()) {
+    if (!file.is_open()) 
+    {
         std::cerr << "Error opening file: " << filename << std::endl;
     }
     lenFile();
@@ -14,7 +15,8 @@ FileProcessing::FileProcessing(const std::string &filename) :
 
 FileProcessing::~FileProcessing()
 {
-    if (file.is_open()) {
+    if (file.is_open()) 
+    {
         file.close();
     }
 }
@@ -24,33 +26,38 @@ void FileProcessing::sizeRAM()
     #ifdef _WIN32
         MEMORYSTATUSEX memInfo;
         memInfo.dwLength = sizeof(MEMORYSTATUSEX);
-        if (GlobalMemoryStatusEx(&memInfo)) {
+        if (GlobalMemoryStatusEx(&memInfo)) 
+        {
 
             std::cout << "Free RAM: " << memInfo.ullAvailPhys << " B\n";
             ram_size = static_cast<size_t>(memInfo.ullAvailPhys*0.7);
         }
-        else {
+        else 
+        {
             std::cout << "Error of reading of RAM size\n";
             DWORD error = GetLastError();
             std::cout << "Error code: " << error << std::endl;
         }
     #elif __linux__
             std::ifstream mem_info("/proc/meminfo");
-        if (!mem_info.is_open()) {
+        if (!mem_info.is_open()) 
+        {
             throw std::runtime_error("Couldn't open /proc/meminfo");
         }
 
         std::unordered_map<std::string, size_t> mem_data;
         std::string line;
 
-        while (std::getline(mem_info, line)) {
+        while (std::getline(mem_info, line)) 
+        {
             std::istringstream iss(line);
             std::string key;
             size_t value;
             std::string unit;
 
             iss >> key;
-            if (key.back() == ':') {
+            if (key.back() == ':') 
+            {
                 key.pop_back();
             }
 
@@ -79,21 +86,25 @@ void FileProcessing::lenFile()
 void FileProcessing::printRAM()
 {
     std::cout << "[INFO] SLICE: " << slice.size() << "\n";
-    for (const auto& it : slice) {
+    for (const auto& it : slice) 
+    {
         std::cout << it;
     }
     std::cout << "\n";
 
     std::cout << "[INFO] MEMORY: " << memory_size << " [" << memory.size() << "]" << "\n";
-    for (const auto& it1 : memory) {
-        for (const auto& it2 : it1) {
+    for (const auto& it1 : memory) 
+    {
+        for (const auto& it2 : it1) 
+        {
             std::cout << it2;
         }
     }
     std::cout << "\n";
 
     std::cout << "[INFO] BUFFER: " << buffer.size() << "\n";
-    for (const auto& it : buffer) {
+    for (const auto& it : buffer) 
+    {
         std::cout << it;
     }
     std::cout << "\n";
@@ -139,26 +150,6 @@ void FileProcessing::spliteMemory()
     std::cout << "========================STOP_SPLITE=========================\n";
 }
 
-void FileProcessing::clearSlice()
-{
-    std::cout << "=====================START_CLEAR_SLICE======================\n";
-    if (!slice.empty()) {
-        slice.clear();
-    }
-    //printRAM();
-    std::cout << "=====================STOP_CLEAR_SLICE=======================\n";
-}
-
-void FileProcessing::clearBuffer()
-{
-    std::cout << "====================START_CLEAR_BUFFER=====================\n";
-    if (!buffer.empty()) {
-        buffer.clear();
-    }
-    //printRAM();
-    std::cout << "====================STOP_CLEAR_SLICE======================\n";
-}
-
 void FileProcessing::shuffleMemory()
 {
     std::cout << "========================START_SHUFFLE=========================\n";
@@ -188,7 +179,8 @@ void FileProcessing::mergeSlice()
     size_t start_index = (start_read != size_of_file) ? memory.size() / 2 : 0;
     auto start_it = memory.begin() + start_index;
 
-    for (auto it = start_it; it != memory.end(); ++it) {
+    for (auto it = start_it; it != memory.end(); ++it) 
+    {
         slice.insert(slice.end(), std::make_move_iterator(it->begin()), std::make_move_iterator(it->end()));
         memory_size -= it->size(); 
     }
@@ -196,7 +188,8 @@ void FileProcessing::mergeSlice()
     memory.erase(start_it, memory.end());
 
 
-    if(!buffer.empty()) {
+    if(!buffer.empty()) 
+    {
         memory.push_back(buffer);
         memory_size += buffer.size();
     }
@@ -219,15 +212,16 @@ void FileProcessing::writeFile()
 void FileProcessing::executeProcessing()
 {
     size_t n = 0;
-    while (size_of_file != start_read) {
+    while (size_of_file != start_read) 
+    {
         readFile();
         spliteMemory();
-        clearSlice();
+        slice.clear();
         shuffleMemory();
         mergeSlice();
-        clearBuffer();
+        buffer.clear();
         writeFile();
-        clearSlice();
+        slice.clear();
         n++;
     }
     std::cout << "\n[INFO] TOTAL_ITERATIONS: " << n << "\n";
