@@ -37,15 +37,12 @@ class FileProcessing {
     FileProcessing(const std::string& filename);//Конструктор от имени файла
     ~FileProcessing();//Деструктор
 
-    //Кирилл Стрелков
     void executeProcessing();//Метод для запуска работы программы
     void setRAMSize(size_t size);//Метод для указания количества RAM, доступной программе
 
-    //Егор Турушкин
     void readFile();//Метод для считывания сырых данных в slice
     void shuffleMemory();//Метод для перемешивания строк поля memory (Реализован алгоритм Фишера-Йетса)
 
-    //Михаил Порфирьев
     void writeFile(); //Метод, записывающий перемешанные строки в файл
     void spliteMemory(); //Метод, делящий сырые данные на строки
 };

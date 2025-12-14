@@ -10,7 +10,7 @@ int main()
     auto start = std::chrono::high_resolution_clock::now();
 
     FileProcessing A("<path_file>");
-    A.setRAMSize(0.25 * 1024 * 1024 * 1024);// 0.25 GB
+    //Example: A.setRAMSize(0.25 * 1024 * 1024 * 1024);// 0.25 GB
     A.executeProcessing(); 
 
     auto end = std::chrono::high_resolution_clock::now();
