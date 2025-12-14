@@ -5,13 +5,7 @@
 #include <vector>
 #include <string>
 #include <random>
-
-#ifdef _WIN32
-    #include <windows.h>
-#elif __linux__
-    #include <sys/sysinfo.h>
-    #include <unordered_map>
-#endif
+#include <algorithm>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -32,11 +26,12 @@ class FileProcessing {
     size_t start_read;//Позиция в файле, с которой считываются сырые данные
     size_t size_of_file;//Количество символов в файле
 
+    //Кирилл Стрелков
     void sizeRAM();//Вспомогательный метод, передает количество свободной RAM полю ram_size
     void lenFile();//Вспомогательный метод, передает количество символов в файле полю size_of_file
     void mergeSlice();//Вспомогательный метод, объединяющий строку, считанную не полностью из поля buffer, с новыми сырыми данными
 
-    void printRAM();//Метод для отладки
+    void logRAM();//Метод для отладки
 
     public:
     FileProcessing(const std::string& filename);//Конструктор от имени файла
