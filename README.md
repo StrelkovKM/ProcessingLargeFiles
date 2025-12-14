@@ -7,11 +7,19 @@
 
 ## Сборка и запуск: 
 
-1. Клонируйте репозиторий и перейти ветку по tag: `V2.0.0`.
+1. Клонируйте репозиторий и перейдите в ветку по tag: `V2.0.0`
+   ```bash 
+   git clone https://github.com/StrelkovKM/ProcessingLargeFiles.git
+   cd ProcessingLargeFiles
+   git chechout V2.0.0
+   ```
+   
    Для сборки проекта понадобиться `CMake` версии не ниже `3.10`
 2. Из директории `ProcessingLargeFiles` откройте консоль и введите следующие команды:
-   1. `mkdir build && cd build`
-   2. `cmake ..`
+   ```bash
+   mkdir build && cd build
+   cmake ..
+   ```
 
 3. В директории `src` в файле `main.cpp` в строку:
    ```cpp
