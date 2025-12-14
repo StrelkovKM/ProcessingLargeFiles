@@ -40,15 +40,17 @@ class FileProcessing {
 
     void sizeRAM();
     void setRAMSize(size_t size);
+
     void lenFile();
+    void readFile();
     void printRAM();
-    void readFile(); //Egor
-    void spliteMemory(); //Misha
+    
+    void spliteMemory();
     void clearSlice();
     void clearBuffer();
-    void shuffleMemory(); //Egor
+    void shuffleMemory();
     void mergeSlice();
-    void writeFile(); //Misha
+    void writeFile();
 
     void executeProcessing();
 };

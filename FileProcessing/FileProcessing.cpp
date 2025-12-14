@@ -102,8 +102,9 @@ void FileProcessing::printRAM()
 void FileProcessing::readFile()
 {
     std::cout << "========================START_READ=========================\n";
-    size_t chunk_read = ( (start_read + (ram_size - memory_size - buffer.size()) / 2) > size_of_file)
-        ? (size_of_file - start_read) : ( (ram_size - memory_size - buffer.size() ) / 2);
+    size_t empty_space = (ram_size - memory_size - buffer.size()) / 2;
+    size_t chunk_read = ( (start_read + empty_space) > size_of_file)
+        ? (size_of_file - start_read) : ( empty_space );
     std::cout << "[INFO] START_READ: " << start_read << "\n";
     std::cout << "[INFO] CHUNK_READ: " << chunk_read << "\n";
     slice.resize(chunk_read);
